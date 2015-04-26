@@ -119,6 +119,16 @@ class Supervisor(Configurable):
                     aug.set(path + '/user', process_info['user'])
                     aug.set(path + '/killasgroup', 'true')
                     aug.set(path + '/stopasgroup', 'true')
+                    aug.set(path + '/stdout_logfile', '%s/%s/%s.stdout.log' % (
+                        SystemConfig.get(self.context).data['log_dir'],
+                        website['name'],
+                        app_config['name'],
+                    ))
+                    aug.set(path + '/stderr_logfile', '%s/%s/%s.stderr.log' % (
+                        SystemConfig.get(self.context).data['log_dir'],
+                        website['name'],
+                        app_config['name'],
+                    ))
 
         aug.save()
         SupervisorRestartable.get(self.context).schedule_restart()

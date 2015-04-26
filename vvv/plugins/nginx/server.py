@@ -37,73 +37,6 @@ class NginxServiceCheck(Check):
 class NginxWebserver(Configurable):
     name = 'nginx'
 
-    '''
-    def __generate_website_location(self, ws, location):
-        params = location.backend.params
-
-        if location.backend.type == 'static':
-            content = TEMPLATE_LOCATION_CONTENT_STATIC % {
-                'autoindex': 'autoindex on;' if params['autoindex'] else '',
-            }
-
-        if location.backend.type == 'proxy':
-            content = TEMPLATE_LOCATION_CONTENT_PROXY % {
-                'url': params.get('url', 'http://127.0.0.1/'),
-            }
-
-        if location.backend.type == 'fcgi':
-            content = TEMPLATE_LOCATION_CONTENT_FCGI % {
-                'url': params.get('url', '127.0.0.1:9000'),
-            }
-
-        if location.backend.type == 'php-fcgi':
-            content = TEMPLATE_LOCATION_CONTENT_PHP_FCGI % {
-                'id': location.backend.id,
-            }
-
-        if location.backend.type == 'python-wsgi':
-            content = TEMPLATE_LOCATION_CONTENT_PYTHON_WSGI % {
-                'id': location.backend.id,
-            }
-
-        if location.backend.type == 'ruby-unicorn':
-            content = TEMPLATE_LOCATION_CONTENT_RUBY_UNICORN % {
-                'id': location.backend.id,
-            }
-
-        if location.backend.type == 'ruby-puma':
-            content = TEMPLATE_LOCATION_CONTENT_RUBY_PUMA % {
-                'id': location.backend.id,
-            }
-
-        if location.backend.type == 'nodejs':
-            content = TEMPLATE_LOCATION_CONTENT_NODEJS % {
-                'port': location.backend.params.get('port', 8000) or 8000,
-            }
-
-        if location.custom_conf_override:
-            content = ''
-
-        path_spec = ''
-        if location.path:
-            if location.path_append_pattern:
-                path_spec = 'root %s;' % location.path
-            else:
-                path_spec = 'alias %s;' % location.path
-
-        return TEMPLATE_LOCATION % {
-            'pattern': location.pattern,
-            'custom_conf': location.custom_conf,
-            'path': path_spec,
-            'match': {
-                'exact': '',
-                'regex': '~',
-                'force-regex': '^~',
-            }[location.match],
-            'content': content,
-        }
-    '''
-
     def __generate_website_config(self, website):
         location_info = []
         for location in website['locations']:
@@ -124,9 +57,17 @@ class NginxWebserver(Configurable):
                 new_location = location.copy()
                 new_location['type'] = app_type.get_access_type(website, app_config)
                 new_location['params'].update(app_type.get_access_params(website, app_config))
+                new_location['path'] = app_config['path']
                 location_info.append(new_location)
             else:
                 logging.warn('Skipped unknown location type "%s"', location['type'])
+
+        log_dir = os.path.join(SystemConfig.get(self.context).data['log_dir'], website['name'])
+        ensure_directory(
+            log_dir,
+            uid=SystemConfig.get(self.context).data['nginx']['user'],
+            mode=0755
+        )
 
         return Template.by_name(self.context, 'nginx.website.conf').render(data={
             'website': website,

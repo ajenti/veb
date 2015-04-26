@@ -22,6 +22,7 @@ class CorePlugin(Plugin):
 
                 ws.setdefault('apps', [])
                 for app in ws['apps']:
+                    app.setdefault('path', '/srv')
                     app.setdefault('name', 'unnamed')
                     app.setdefault('type', 'php-fpm')
                     app.setdefault('params', {})

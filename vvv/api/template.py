@@ -24,4 +24,4 @@ class Template(object):
             'main_config': MainConfig.get(self.context).data,
             'system_config': SystemConfig.get(self.context).data,
         })
-        return self.template.render(**data)
+        return self.template.render(**data).replace('\n\n', '\n')

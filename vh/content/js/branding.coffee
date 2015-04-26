@@ -1,2 +1,0 @@
-$ () ->
-    $('.logo .release').html('v')
