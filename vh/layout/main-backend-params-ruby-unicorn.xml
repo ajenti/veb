@@ -1,0 +1,9 @@
+<box>
+    <bind:dict bind="params">
+        <vc>
+            <formline text="{Workers}">
+                <textbox bind="workers" type="integer" />
+            </formline>
+        </vc>
+    </bind:dict>
+</box>

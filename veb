@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+
+import coloredlogs
+import getopt
+import jadi
+import logging
+import os
+import sys
+
+import vvv.plugins
+from vvv.api.command import Command, CommandArgumentError
+
+
+def usage():
+    print """
+Usage: %s [options] command [command specific options]
+Options:
+    -v                  - Verbose logging
+    -h, --help          - This help
+    """ % sys.argv[0]
+
+
+def list_commands():
+    print '''
+Available commands:
+%s
+''' % '\n'.join(
+        ' - %s' % cls.name
+        for cls in sorted(Command.classes(), key=lambda x: x.name)
+    )
+
+
+if __name__ == '__main__':
+    log_level = logging.INFO
+
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:],
+            'v',
+            []
+        )
+    except getopt.GetoptError as e:
+        print str(e)
+        usage()
+        sys.exit(2)
+
+    for o, a in opts:
+        if o in ('-v',):
+            log_level = logging.DEBUG
+        else:
+            usage()
+            sys.exit(2)
+
+    coloredlogs.install(log_level)
+
+    if os.geteuid() != 0:
+        logging.warn('This command is intended to be run as root!')
+
+    vvv.config_dir = '/etc/veb'
+    if not os.path.exists(vvv.config_dir):
+        logging.warn('Configuration does not exist')
+        logging.warn('Activating VVV for the first time will overwrite your web server configuration')
+        logging.info('Continue? (yes/no)')
+        while True:
+            answer = raw_input()
+            if answer == 'yes':
+                os.makedirs(vvv.config_dir)
+                break
+            elif answer == 'no':
+                sys.exit(3)
+            else:
+                logging.info('yes or no?')
+
+    if len(args) == 0:
+        logging.critical('No command specified')
+        list_commands()
+        sys.exit(2)
+
+    command_name = args.pop(0)
+
+    context = jadi.Context()
+
+    command = Command.by_name(context, command_name)
+    if command is None:
+        logging.critical('Unknown command %s' % command_name)
+        list_commands()
+        sys.exit(2)
+
+    try:
+        command.consume_arguments(args)
+    except CommandArgumentError as e:
+        logging.critical(str(e))
+        print command.usage
+        sys.exit(2)
+
+    if len(args) > 0:
+        logging.critical('Unused trailing arguments: "%s"' % ' '.join(args))
+        sys.exit(2)
+
+    output = command.run()
+
+    if output:
+        output = output.encode('utf-8')
+        logging.debug('Command returned %i bytes of output', len(output))
+        sys.stdout.write(output)

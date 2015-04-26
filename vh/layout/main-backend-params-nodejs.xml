@@ -1,0 +1,16 @@
+<box binder:context="params">
+    <vc>
+        <formline text="{Script name}">
+            <textbox bind="[script]" />
+        </formline>
+        <formline text="{Script's HTTP port}">
+            <textbox bind="[port]" type="integer" />
+        </formline>
+        <formline text="{Environment}">
+            <textbox bind="[environment]" />
+        </formline>
+        <formline text="{Process user}">
+            <textbox bind="[user]" />
+        </formline>
+    </vc>
+</box>

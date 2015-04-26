@@ -1,0 +1,29 @@
+<box>
+    <bind:dict bind="params">
+        <vc>
+            <formline text="{Application module}">
+                <textbox bind="module" />
+            </formline>
+            <dt filtering="False">
+                <collapserow>
+                    <hc>
+                        <icon icon="cog" />
+                        <label text="Python" />
+                    </hc>
+                    <formline text="{Virtualenv path}">
+                        <pathbox bind="venv" directory="True" />
+                    </formline>
+                    <formline text="{Workers}">
+                        <textbox bind="workers" type="integer" />
+                    </formline>
+                    <formline text="{Username}">
+                        <textbox bind="username" />
+                    </formline>
+                    <formline text="{Custom configuration}">
+                        <codearea bind="custom_conf" />
+                    </formline>
+                </collapserow>
+            </dt>
+        </vc>
+    </bind:dict>
+</box>

@@ -1,0 +1,84 @@
+<body binder:context="config">
+    <pad>
+        <vc>
+            <formgroup text="{Databases}">
+                <vc>
+                    <bind:collection bind="[databases]" id="databases">
+                        <dt bind="__items" filtering="False">
+                            <dtr>
+                                <dth text="{Name}" />
+                                <dth width="60" />
+                            </dtr>
+                        </dt>
+                        <bind:template>
+                            <dtr>
+                                <dtd><label bind="[name]" /></dtd>
+                                <dtd>
+                                    <hc>
+                                        <tooltip text="{Detach from the website}">
+                                            <button id="detach" icon="remove" style="mini" />
+                                        </tooltip>
+                                        <tooltip text="{Destroy}">
+                                            <button bind="__delete" icon="trash" warning="{Drop the database?}" style="mini" />
+                                        </tooltip>
+                                    </hc>
+                                </dtd>
+                            </dtr>
+                        </bind:template>
+                    </bind:collection>
+
+                    <vc>
+                        <formline text="{Name}">
+                            <textbox id="db-name" />
+                        </formline>
+                        <formline>
+                            <button icon="plus" text="{Create}" id="create-db" />
+                        </formline>
+                    </vc>
+                </vc>
+            </formgroup>
+
+            <formgroup text="{Users}">
+                <vc>
+                    <bind:collection bind="[users]" id="users">
+                        <dt bind="__items" filtering="False">
+                            <dtr>
+                                <dth text="{Name}" />
+                                <dth text="{Password}" />
+                                <dth width="60" />
+                            </dtr>
+                        </dt>
+                        <bind:template>
+                            <dtr>
+                                <dtd><label bind="[name]" /></dtd>
+                                <dtd><label bind="[password]" /></dtd>
+                                <dtd>
+                                    <hc>
+                                        <tooltip text="{Detach from the website}">
+                                            <button id="detach" icon="remove" style="mini" />
+                                        </tooltip>
+                                        <tooltip text="{Destroy}">
+                                            <button bind="__delete" icon="trash" warning="{Drop the user?}" style="mini" />
+                                        </tooltip>
+                                    </hc>
+                                </dtd>
+                            </dtr>
+                        </bind:template>
+                    </bind:collection>
+
+                    <formline text="{Name}">
+                        <textbox id="db-username" />
+                    </formline>
+                    <formline text="{Password}">
+                        <textbox id="db-password" />
+                    </formline>
+                    <formline>
+                        <button icon="plus" text="{Create}" id="create-user" />
+                    </formline>
+                </vc>
+            </formgroup>
+
+            <button id="grant" icon="lock" text="{Grant all permissions}" />
+        </vc>
+    </pad>
+</body>

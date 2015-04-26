@@ -1,0 +1,41 @@
+<vc>
+    <formline text="{URL Pattern}">
+        <hc>
+            <textbox bind="pattern" />
+            <dropdown bind="match" style="mini"
+                labels="['Exact', 'Regex', 'Regex (forced)']"
+                values="['exact', 'regex', 'force-regex']"
+                />
+        </hc>
+    </formline>
+
+    <box id="backend-params">
+    </box>
+
+    <dt filtering="False">
+        <collapserow>
+            <hc>
+                <icon icon="cog" />
+                <label text="{Advanced}" />
+            </hc>
+            <vc>
+                <formline text="{Custom path}">
+                    <vc>
+                        <pathbox bind="path" directory="True" />
+                        <hc>
+                            <checkbox bind="path_append_pattern" text="{Append URL pattern to path}" />
+                            <label text="(root)" />
+                        </hc>
+                    </vc>
+                </formline>
+
+                <formline text="{Custom configuration}">
+                    <vc>
+                        <codearea bind="custom_conf" width="500" height="200" />
+                        <checkbox bind="custom_conf_override" text="{Use only custom configuration and don't include standard parameters}" />
+                    </vc>
+                </formline>
+            </vc>
+        </collapserow>
+    </dt>
+</vc>
