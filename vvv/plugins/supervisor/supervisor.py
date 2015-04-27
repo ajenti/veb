@@ -63,16 +63,22 @@ class SupervisorServiceCheck(Check):
 class GenericAppType(AppType):
     name = 'generic'
 
-    def get_access_type(self, website_config, app):
+    def get_access_type(self, website, app):
         return None
 
-    def get_access_params(self, website_config, app):
+    def get_access_params(self, website, app):
         return {}
 
-    def get_process(self, website_config, app):
+    def get_process(self, website, app):
+        cmd = app['params']['command']
+        if cmd.startswith('./'):
+            if app['path']:
+                cmd = os.path.join(absolute_path(app['path'], website['root']), cmd[2:])
+            else:
+                cmd = os.path.join(website['root'], cmd[2:])
         return {
-            'command': app['params']['command'],
-            'directory': app['params']['directory'] or website_config['root'],
+            'command': cmd,
+            'directory': app['path'] or website['root'],
             'environment': app['params']['environment'],
             'user': app['params']['user'],
         }
@@ -97,7 +103,7 @@ class Supervisor(Configurable):
         aug.load()
 
         for website in MainConfig.get(self.context).data['websites']:
-            if website['enabled']:
+            if website['enabled'] and not website['maintenance_mode']:
                 prefix = 'veb-app-%s-' % website['name']
 
                 for path in aug.match(aug_path + '/*'):
@@ -121,7 +127,7 @@ class Supervisor(Configurable):
                         aug.set(path + '/command', process_info['command'])
                         aug.set(
                             path + '/directory', 
-                            absolute_path(process_info['directory'] , website['root']) or website['root']
+                            absolute_path(process_info['directory'], website['root']) or website['root']
                         )
                         if process_info['environment']:
                             aug.set(path + '/environment', process_info['environment'])

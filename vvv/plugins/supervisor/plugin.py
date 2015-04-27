@@ -48,7 +48,6 @@ class SupervisorPlugin(Plugin):
                     if app['type'] == 'generic':
                         app['params'].setdefault('user', 'root')
                         app['params'].setdefault('environment', '')
-                        app['params'].setdefault('directory', None)
                         app['params'].setdefault('command', None)
 
         if isinstance(config, SystemConfig):

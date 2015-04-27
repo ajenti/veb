@@ -29,7 +29,7 @@ class CorePlugin(Plugin):
 
                 ws.setdefault('ports', [])
                 for port in ws['ports']:
-                    port.setdefault('host', None)
+                    port.setdefault('host', '*')
                     port.setdefault('port', 80)
                     port.setdefault('default', False)
                     port.setdefault('ssl', False)

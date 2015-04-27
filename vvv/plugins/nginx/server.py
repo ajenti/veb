@@ -41,7 +41,9 @@ class NginxWebserver(Configurable):
         location_info = []
         for location in website['locations']:
             if location['type'] in ['static', 'proxy', 'fcgi']:
-                location_info.append(location)
+                new_location = location.copy()
+                new_location['path'] = absolute_path(location['path'], website['root'])
+                location_info.append(new_location)
             elif location['type'] == 'app':
                 for app in website['apps']:
                     if app['name'] == location['params']['app']:
@@ -99,6 +101,11 @@ class NginxWebserver(Configurable):
             uid=system.data['nginx']['user'],
             mode=0755
         )
+        ensure_directory(
+            system.data['nginx']['lib_path'],
+            uid=system.data['nginx']['user'],
+            mode=0755
+        )
 
         open(system.data['nginx']['config_file'], 'w').write(
             Template.by_name(self.context, 'nginx.conf').render()
@@ -118,10 +125,6 @@ class NginxWebserver(Configurable):
                 path = os.path.join(system.data['nginx']['config_vhost_root'], website['name'] + '.conf')
                 with open(path, 'w') as f:
                     f.write(self.__generate_website_config(website))
-
-        subprocess.call([
-            'chown', 'www-data:www-data', '-R', system.data['nginx']['lib_path'],
-        ])
 
         NginxRestartable.get(self.context).schedule_restart()
 
