@@ -6,6 +6,7 @@ import jadi
 import logging
 import os
 import sys
+import traceback
 
 import vvv.plugins
 from vvv.api.command import Command, CommandArgumentError
@@ -97,7 +98,12 @@ if __name__ == '__main__':
         logging.critical('Unused trailing arguments: "%s"' % ' '.join(args))
         sys.exit(2)
 
-    output = command.run()
+    try:
+        output = command.run()
+    except Exception as e:
+        traceback.print_exc()
+        logging.critical(str(e))
+        sys.exit(3)
 
     if output:
         output = output.encode('utf-8')

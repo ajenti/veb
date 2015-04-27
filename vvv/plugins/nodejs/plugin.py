@@ -13,10 +13,11 @@ class NodeJSPlugin(Plugin):
             config.data.setdefault('websites', [])
 
             for ws in config.data['websites']:
-                for app in ws['apps']:
-                    if app['type'] == 'nodejs':
-                        app['params'].setdefault('script', 'app.js')
-                        app['params'].setdefault('node_binary', 'node')
-                        app['params'].setdefault('user', 'root')
-                        app['params'].setdefault('port', 8000)
-                        app['params'].setdefault('environment', None)
+                if ws['enabled']:
+                    for app in ws['apps']:
+                        if app['type'] == 'nodejs':
+                            app['params'].setdefault('script', 'app.js')
+                            app['params'].setdefault('node_binary', 'node')
+                            app['params'].setdefault('user', 'root')
+                            app['params'].setdefault('port', 8000)
+                            app['params'].setdefault('environment', None)

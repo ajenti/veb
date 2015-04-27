@@ -2,6 +2,7 @@
 import logging
 import os
 import subprocess
+import sys
 import tempfile
 import yaml
 from jadi import component
@@ -162,3 +163,55 @@ edit <short-name> - launches config editor for a website
             else:
                 logging.critical('Editor exited with an erroneous exitcode')
                 logging.info('File is retained in %s', tmp.name)
+
+
+@component(Command)
+class ImportWebsiteCommand(Command):
+    name = 'import'
+    usage = '''
+import - import a YAML website config from stdin
+'''
+
+    def run(self):
+        cfg = MainConfig.get(self.context)
+
+        try:
+            website = yaml.load(sys.stdin)
+        except Exception as e:
+            raise Exception('Config content is invalid: %s', str(e))
+
+        for ws in cfg.data['websites']:
+            if ws['name'] == website['name']:
+                ws.update(website)
+                break
+        else:
+            cfg.data['websites'].append(website)
+
+        cfg.save()
+        logging.info('Updated configuration for %s', website['name'])
+
+
+@component(Command)
+class ExportWebsiteCommand(Command):
+    name = 'export'
+    usage = '''
+export <short-name> - exports YAML config for a website
+'''
+
+    def consume_arguments(self, argv):
+        if not argv:
+            raise CommandArgumentError('short-name is required')
+        self.website_name = argv.pop(0)
+
+    def run(self):
+        cfg = MainConfig.get(self.context)
+        for ws in cfg.data['websites']:
+            if ws['name'] == self.website_name:
+                return yaml.safe_dump(
+                    ws,
+                    default_flow_style=False,
+                    encoding='utf-8',
+                    allow_unicode=True,
+                )
+        else:
+            raise Exception('Website "%s" not found', self.website_name)

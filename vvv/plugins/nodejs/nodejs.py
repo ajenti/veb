@@ -1,28 +1,29 @@
 from jadi import component
 
 from vvv.api.app import AppType
+from vvv.api.util import absolute_path
 
 
 @component(AppType)
 class NodeJSType(AppType):
     name = 'nodejs'
 
-    def get_access_type(self, website_config, app_config):
+    def get_access_type(self, website, app):
         return 'proxy'
 
-    def get_access_params(self, website_config, app_config):
+    def get_access_params(self, website, app):
         return {
-            'url': 'http://127.0.0.1:%s' % app_config['params']['port']
+            'url': 'http://127.0.0.1:%s' % app['params']['port']
         }
 
-    def get_process(self, website_config, app_config):
+    def get_process(self, website, app):
         p = {
             'command': '%s %s' % (
-                app_config['params']['node_binary'],
-                app_config['params']['script'] or '.',
+                app['params']['node_binary'],
+                app['params']['script'] or '.',
             ),
-            'user': app_config['params']['user'],
-            'environment': app_config['params']['environment'],
-            'directory': app_config['path'],
+            'user': app['params']['user'],
+            'environment': app['params']['environment'],
+            'directory': absolute_path(app['path'], website['root']),
         }
         return p

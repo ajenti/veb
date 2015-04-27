@@ -3,9 +3,6 @@ from jadi import component
 
 from vvv.api.command import Command, CommandArgumentError
 from vvv.api.config import MainConfig
-from vvv.api.check import Check, CheckFailure
-from vvv.api.configurable import Configurable
-from vvv.api.restartable import Restartable
 
 
 @component(Command)
@@ -31,5 +28,3 @@ maintenance <website-name> on|off - enables (disables) maintenance mode for a we
         cfg.save()
 
         logging.info('Website %s maintenance mode set to: %s', self.website_name, self.on)
-
-

@@ -78,3 +78,4 @@ class Augeas(augeas.Augeas):
         """
         for sp in self.match(path + '/*'):
             print sp, '=', self.get(sp)
+            self.dump(sp)

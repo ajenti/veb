@@ -25,7 +25,7 @@ pm.max_children = 5
 pm.min_spare_servers = 1
 pm.max_spare_servers = 5
 
-% for website in main_config['websites']:
+% for website in enabled_websites:
     % for app in website['apps']:
         % if app['type'] == 'php-fpm':
 

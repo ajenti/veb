@@ -22,6 +22,11 @@ class Template(object):
     def render(self, data={}):
         data.update({
             'main_config': MainConfig.get(self.context).data,
+            'enabled_websites': [
+                x for x in
+                MainConfig.get(self.context).data['websites']
+                if x['enabled']
+            ],
             'system_config': SystemConfig.get(self.context).data,
         })
         return self.template.render(**data).replace('\n\n', '\n')

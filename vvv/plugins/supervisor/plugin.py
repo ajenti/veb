@@ -30,16 +30,12 @@ class SupervisorCentOS(SupervisorImpl):
 
     @classmethod
     def __verify__(cls):
-        return os.path.exists('/etc/rhel-release')
+        return os.path.exists('/etc/redhat-release')
 
 
 @component(Plugin)
 class SupervisorPlugin(Plugin):
     name = 'supervisor'
-
-    @classmethod
-    def __verify__(cls):
-        return len(SupervisorImpl.classes()) > 0
 
     def add_config_defaults(self, config):
         impl = SupervisorImpl.any(self.context)

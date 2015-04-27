@@ -1,5 +1,6 @@
 import os
-from jadi import component, interface, NoImplementationError
+import subprocess
+from jadi import component, interface
 
 from vvv.api.config import SystemConfig, MainConfig
 from vvv.api.plugin import Plugin
@@ -18,6 +19,7 @@ class PHPFPMDebian(PHPFPMImpl):
     default_pidfile = '/var/run/php5-fpm.pid'
     default_config_file = '/etc/php5/fpm/php-fpm.conf'
     service_name = 'php5-fpm'
+    binary = 'php5-fpm'
 
     @classmethod
     def __verify__(cls):
@@ -29,6 +31,7 @@ class PHPFPMCentOS(PHPFPMImpl):
     default_pidfile = '/var/run/php-fpm/php-fpm.pid',
     default_config_file = '/etc/php-fpm.conf'
     service_name = 'php-fpm'
+    binary = 'php-fpm'
 
     @classmethod
     def __verify__(cls):
@@ -41,7 +44,9 @@ class PHPFPMPlugin(Plugin):
 
     @classmethod
     def __verify__(cls):
-        return len(PHPFPMImpl.classes()) > 0
+        if not PHPFPMImpl.classes():
+            return False
+        return subprocess.call(['which', PHPFPMImpl.classes()[0].binary]) == 0
 
     def add_config_defaults(self, config):
         impl = PHPFPMImpl.any(self.context)

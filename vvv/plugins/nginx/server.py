@@ -10,7 +10,7 @@ from vvv.api.configurable import Configurable
 from vvv.api.check import Check, CheckFailure
 from vvv.api.restartable import Restartable
 from vvv.api.template import Template
-from vvv.api.util import ensure_directory
+from vvv.api.util import ensure_directory, absolute_path
 
 
 @component(Check)
@@ -43,21 +43,21 @@ class NginxWebserver(Configurable):
             if location['type'] in ['static', 'proxy', 'fcgi']:
                 location_info.append(location)
             elif location['type'] == 'app':
-                for app_config in website['apps']:
-                    if app_config['name'] == location['params']['app']:
+                for app in website['apps']:
+                    if app['name'] == location['params']['app']:
                         break
                 else:
                     logging.warn('Skipping unknown app "%s"', location['params']['app'])
                     continue
 
-                app_type = AppType.by_name(self.context, app_config['type'])
+                app_type = AppType.by_name(self.context, app['type'])
                 if not app_type:
-                    logging.warn('Skipping unknown app type "%s"', app_config['type'])
+                    logging.warn('Skipping unknown app type "%s"', app['type'])
                     continue
                 new_location = location.copy()
-                new_location['type'] = app_type.get_access_type(website, app_config)
-                new_location['params'].update(app_type.get_access_params(website, app_config))
-                new_location['path'] = app_config['path']
+                new_location['type'] = app_type.get_access_type(website, app)
+                new_location['params'].update(app_type.get_access_params(website, app))
+                new_location['path'] = absolute_path(app['path'], website['root'])
                 location_info.append(new_location)
             else:
                 logging.warn('Skipped unknown location type "%s"', location['type'])

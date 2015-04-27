@@ -18,4 +18,9 @@ def ensure_directory(path, uid=None, gid=None, mode=None):
         os.chown(path, uid, gid)
     if mode:
         os.chmod(path, mode)
-        
+
+
+def absolute_path(path, root):
+    if not path.startswith('/'):
+        return os.path.join(root, path)
+    return path
