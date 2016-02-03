@@ -7,7 +7,7 @@ let title_comment =
     [ label "#titlecomment" . del /[ \t]*[#;][ \t]*/ " # " . store /[^ \t\r\n]([^\r\n]*[^ \t\r\n])?/ ]
 
 let title_noeol (kw:regexp)
-    = Util.del_str "[" . key kw . Util.del_str "]" . title_comment? . Util.doseol
+    = Util.del_str "[" . key kw . Util.del_str "]" . title_comment? . Util.eol
 
 
 let indented_title_noeol (kw:regexp)
@@ -19,7 +19,7 @@ let entry_generic_nocomment (kw:lens) (sep:lens)
   in let bare_re = (/[^\r\n]/ - comment_re)+
   in let no_quot = /[^"\r\n]*/
   in let bare = (store (bare_re_noquot . (bare_re* . bare_re_noquot)?))
-  in [ kw . sep . (Sep.opt_space . bare)? . (comment|Util.doseol) ]
+  in [ kw . sep . (Sep.opt_space . bare)? . (comment|Util.eol) ]
 
 let entry_generic (kw:lens) (sep:lens) (comment_re:regexp) (comment:lens) =
   entry_generic_nocomment kw sep comment_re comment | comment

@@ -22,7 +22,7 @@ class CorePlugin(Plugin):
 
                 ws.setdefault('apps', [])
                 for app in ws['apps']:
-                    app.setdefault('path', '/srv')
+                    app.setdefault('path', '')
                     app.setdefault('name', 'unnamed')
                     app.setdefault('type', 'php-fpm')
                     app.setdefault('params', {})
@@ -51,7 +51,7 @@ class CorePlugin(Plugin):
                     location.setdefault('params', {})
                     location.setdefault('custom_conf', None)
                     location.setdefault('custom_conf_override', False)
-                    location.setdefault('path', ws['root'])
+                    location.setdefault('path', '')
                     location.setdefault('path_append_pattern', False)
 
                     if location['type'] == 'static':

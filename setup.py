@@ -7,7 +7,7 @@ __requires = filter(None, open('requirements.txt').read().splitlines())
 
 setup(
     name='vvveb',
-    version='1.0.18',
+    version='1.0.27',
     install_requires=__requires,
     description='An automatic website hosting configurator',
     author='Eugene Pankov',

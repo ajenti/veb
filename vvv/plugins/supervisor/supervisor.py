@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+import time
 from jadi import component
 
 from vvv.api.app import AppType
@@ -126,7 +127,7 @@ class Supervisor(Configurable):
                         path = aug_path + '/program:%s' % full_name
                         aug.set(path + '/command', process_info['command'])
                         aug.set(
-                            path + '/directory', 
+                            path + '/directory',
                             absolute_path(process_info['directory'], website['root']) or website['root']
                         )
                         if process_info['environment']:
@@ -134,6 +135,9 @@ class Supervisor(Configurable):
                         aug.set(path + '/user', process_info['user'])
                         aug.set(path + '/killasgroup', 'true')
                         aug.set(path + '/stopasgroup', 'true')
+                        aug.set(path + '/startsecs', str(process_info['startsecs']))
+                        aug.set(path + '/startretries', str(process_info['startretries']))
+                        aug.set(path + '/autorestart', str(process_info['autorestart']).lower())
                         aug.set(path + '/stdout_logfile', '%s/%s/%s.stdout.log' % (
                             SystemConfig.get(self.context).data['log_dir'],
                             website['name'],
@@ -154,4 +158,6 @@ class SupervisorRestartable(Restartable):
     name = 'supervisor'
 
     def do_restart(self):
-        subprocess.check_call(['service', SupervisorImpl.any(self.context).service_name, 'restart'])
+        subprocess.call(['service', SupervisorImpl.any(self.context).service_name, 'start'])
+        time.sleep(2)
+        subprocess.call(['supervisorctl', 'reload'])

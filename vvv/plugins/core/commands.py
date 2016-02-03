@@ -180,6 +180,12 @@ import - import a YAML website config from stdin
         except Exception as e:
             raise Exception('Config content is invalid: %s', str(e))
 
+        if not isinstance(website, dict):
+            raise Exception('Config content is not a dictionary')
+
+        if 'name' not in website:
+            raise Exception('Config contains no website name')
+
         for ws in cfg.data['websites']:
             if ws['name'] == website['name']:
                 ws.update(website)

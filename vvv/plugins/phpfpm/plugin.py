@@ -46,7 +46,12 @@ class PHPFPMPlugin(Plugin):
     def __verify__(cls):
         if not PHPFPMImpl.classes():
             return False
-        return subprocess.call(['which', PHPFPMImpl.classes()[0].binary]) == 0
+        try:
+            subprocess.check_output(['which', PHPFPMImpl.classes()[0].binary])
+        except:
+            return False
+        
+        return True
 
     def add_config_defaults(self, config):
         impl = PHPFPMImpl.any(self.context)

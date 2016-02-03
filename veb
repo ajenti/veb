@@ -17,6 +17,7 @@ def usage():
 Usage: %s [options] command [command specific options]
 Options:
     -v                  - Verbose logging
+    -y                  - Yes to all prompts
     -h, --help          - This help
     """ % sys.argv[0]
 
@@ -33,11 +34,12 @@ Available commands:
 
 if __name__ == '__main__':
     log_level = logging.INFO
+    vvv.force_yes = False
 
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            'v',
+            'vy',
             []
         )
     except getopt.GetoptError as e:
@@ -48,6 +50,8 @@ if __name__ == '__main__':
     for o, a in opts:
         if o in ('-v',):
             log_level = logging.DEBUG
+        elif o in ('-y',):
+            vvv.force_yes = True
         else:
             usage()
             sys.exit(2)
@@ -63,7 +67,10 @@ if __name__ == '__main__':
         logging.warn('Activating VVV for the first time will overwrite your web server configuration')
         logging.info('Continue? (yes/no)')
         while True:
-            answer = raw_input()
+            if vvv.force_yes:
+                answer = 'yes'
+            else:
+                answer = raw_input()
             if answer == 'yes':
                 os.makedirs(vvv.config_dir)
                 break
