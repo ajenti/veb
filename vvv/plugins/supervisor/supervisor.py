@@ -135,9 +135,9 @@ class Supervisor(Configurable):
                         aug.set(path + '/user', process_info['user'])
                         aug.set(path + '/killasgroup', 'true')
                         aug.set(path + '/stopasgroup', 'true')
-                        aug.set(path + '/startsecs', str(process_info['startsecs']))
-                        aug.set(path + '/startretries', str(process_info['startretries']))
-                        aug.set(path + '/autorestart', str(process_info['autorestart']).lower())
+                        aug.set(path + '/startsecs', str(process_info.get('startsecs', 1)))
+                        aug.set(path + '/startretries', str(process_info.get('startretries', 5)))
+                        aug.set(path + '/autorestart', str(process_info.get('autorestart', 'unexpected')).lower())
                         aug.set(path + '/stdout_logfile', '%s/%s/%s.stdout.log' % (
                             SystemConfig.get(self.context).data['log_dir'],
                             website['name'],
