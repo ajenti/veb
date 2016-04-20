@@ -82,6 +82,7 @@ class GenericAppType(AppType):
             'directory': app['path'] or website['root'],
             'environment': app['params']['environment'],
             'user': app['params']['user'],
+            'autorestart': app['params']['autorestart'],
         }
 
 

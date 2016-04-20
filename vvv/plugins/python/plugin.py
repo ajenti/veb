@@ -21,3 +21,4 @@ class PythonPlugin(Plugin):
                         app['params'].setdefault('workers', None)
                         app['params'].setdefault('environment', None)
                         app['params'].setdefault('custom_conf', None)
+                        app['params'].setdefault('autorestart', True)
