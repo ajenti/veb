@@ -22,3 +22,5 @@ class PythonPlugin(Plugin):
                         app['params'].setdefault('environment', None)
                         app['params'].setdefault('custom_conf', None)
                         app['params'].setdefault('autorestart', True)
+                        app['params'].setdefault('startretries', 5)
+                        app['params'].setdefault('startsecs', 3)

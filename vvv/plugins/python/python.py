@@ -93,6 +93,8 @@ class PythonAppType(AppType):
             'user': app['params']['user'],
             'environment': app['params']['environment'],
             'autorestart': app['params']['autorestart'],
+            'startretries': app['params']['startretries'],
+            'startsecs': app['params']['startsecs'],
             'directory': absolute_path(app['path'], website['root']),
         }
         virtualenv = app['params']['virtualenv']

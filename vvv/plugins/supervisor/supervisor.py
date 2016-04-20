@@ -83,6 +83,7 @@ class GenericAppType(AppType):
             'environment': app['params']['environment'],
             'user': app['params']['user'],
             'autorestart': app['params']['autorestart'],
+            'startretries': app['params']['startretries'],
         }
 
 

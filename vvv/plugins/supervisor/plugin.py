@@ -50,7 +50,7 @@ class SupervisorPlugin(Plugin):
                     app['params'].setdefault('user', 'root')
                     app['params'].setdefault('environment', '')
                     app['params'].setdefault('startretries', 3)
-                    app['params'].setdefault('startsecs', 1)
+                    app['params'].setdefault('startsecs', 3)
                     app['params'].setdefault('autorestart', True)
 
         if isinstance(config, SystemConfig):
